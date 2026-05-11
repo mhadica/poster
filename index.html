@@ -12,7 +12,7 @@
       font-family: 'Inter', sans-serif;
       background: #fdf8f2;
       min-height: 100vh;
-      padding-bottom: 48px;
+      padding-bottom: 0;
     }
 
     .hl-banner {
@@ -241,6 +241,20 @@
 
     .hl-success-sub { font-size: 13px; color: #9e845a; }
 
+    .hl-footer {
+      background: #1a1207;
+      color: #9e845a;
+      text-align: center;
+      padding: 16px 20px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 36px;
+      border-top: 2px solid #c9933a;
+    }
+
+    .hl-footer span { color: #c9933a; font-weight: 600; }
+
     .hidden { display: none !important; }
   </style>
 </head>
@@ -301,6 +315,7 @@
       </div>
     </div>
 
+    <!-- Division Secretary: select division -->
     <div id="divisionSection" class="hidden">
       <hr class="hl-divider">
       <div class="hl-section-label">Division</div>
@@ -312,7 +327,28 @@
       </div>
     </div>
 
-    <div id="campusStudentSection" class="hidden">
+    <!-- District Campus Syndicate: ask if campus student -->
+    <div id="syndicateStudentSection" class="hidden">
+      <hr class="hl-divider">
+      <div class="hl-section-label">Campus Student?</div>
+      <div class="hl-field">
+        <div class="hl-radio-group">
+          <label class="hl-radio-option">
+            <input type="radio" name="isCampusStudent" value="Yes">
+            Yes, I am a campus student
+          </label>
+          <label class="hl-radio-option">
+            <input type="radio" name="isCampusStudent" value="No">
+            No
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shared college fields:
+         shown immediately for Campus Unit Leader,
+         shown after "Yes" for District Campus Syndicate -->
+    <div id="collegeSection" class="hidden">
       <hr class="hl-divider">
       <div class="hl-section-label">College Details</div>
       <div class="hl-field">
@@ -338,46 +374,6 @@
       </div>
     </div>
 
-    <div id="syndicateStudentSection" class="hidden">
-      <hr class="hl-divider">
-      <div class="hl-section-label">Campus Student?</div>
-      <div class="hl-field">
-        <div class="hl-radio-group">
-          <label class="hl-radio-option">
-            <input type="radio" name="isCampusStudent" value="Yes">
-            Yes, I am a campus student
-          </label>
-          <label class="hl-radio-option">
-            <input type="radio" name="isCampusStudent" value="No">
-            No
-          </label>
-        </div>
-      </div>
-      <div id="syndicateCollegeFields" class="hidden">
-        <div class="hl-field">
-          <label class="hl-label">College Type</label>
-          <div class="hl-radio-group">
-            <label class="hl-radio-option">
-              <input type="radio" name="synCollegeType" value="Professional College">
-              Professional College
-            </label>
-            <label class="hl-radio-option">
-              <input type="radio" name="synCollegeType" value="Arts & Science College">
-              Arts & Science College
-            </label>
-          </div>
-        </div>
-        <div class="hl-field">
-          <label class="hl-label">College Name</label>
-          <input class="hl-input" type="text" id="synCollegeName" placeholder="Enter college name">
-        </div>
-        <div class="hl-field">
-          <label class="hl-label">Course & Year</label>
-          <input class="hl-input" type="text" id="synCourseYear" placeholder="e.g. B.Tech – 2nd Year">
-        </div>
-      </div>
-    </div>
-
     <div class="hl-error" id="errorMsg"></div>
     <button class="hl-submit" id="submitBtn" onclick="handleSubmit()">Register</button>
   </div>
@@ -389,18 +385,29 @@
   </div>
 </div>
 
+<div class="hl-footer">
+  <span>Campus Student</span> &nbsp;·&nbsp; SSF Kerala
+</div>
+
 <script>
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyi13ymVkKwNWdl9VRsasZDyhPOwA8ZbuplBxX1ikKtklNEElzn9T447X-QgnJLdCWcYg/exec'; 
+
   var divisionData = {};
 
-  google.script.run.withSuccessHandler(function(result) {
-    var districtSelect = document.getElementById('district');
-    result.districts.forEach(function(d) {
-      var opt = document.createElement('option');
-      opt.value = d; opt.textContent = d;
-      districtSelect.appendChild(opt);
+  fetch(APPS_SCRIPT_URL + '?action=getDistrictsAndDivisions')
+    .then(function(res) { return res.json(); })
+    .then(function(result) {
+      var districtSelect = document.getElementById('district');
+      result.districts.forEach(function(d) {
+        var opt = document.createElement('option');
+        opt.value = d; opt.textContent = d;
+        districtSelect.appendChild(opt);
+      });
+      divisionData = result.divisionMap;
+    })
+    .catch(function() {
+      console.error('Failed to load districts. Check your Apps Script URL.');
     });
-    divisionData = result.divisionMap;
-  }).getDistrictsAndDivisions();
 
   document.getElementById('district').addEventListener('change', function() {
     var district = this.value;
@@ -415,22 +422,40 @@
     }
   });
 
+  function resetConditionalSections() {
+    document.getElementById('divisionSection').classList.add('hidden');
+    document.getElementById('syndicateStudentSection').classList.add('hidden');
+    document.getElementById('collegeSection').classList.add('hidden');
+    document.getElementById('division').value = '';
+    document.querySelectorAll('input[name="isCampusStudent"]').forEach(function(r) { r.checked = false; });
+    document.querySelectorAll('input[name="collegeType"]').forEach(function(r) { r.checked = false; });
+    document.getElementById('collegeName').value = '';
+    document.getElementById('courseYear').value = '';
+  }
+
   document.querySelectorAll('input[name="designation"]').forEach(function(r) {
     r.addEventListener('change', function() {
-      document.getElementById('divisionSection').classList.add('hidden');
-      document.getElementById('campusStudentSection').classList.add('hidden');
-      document.getElementById('syndicateStudentSection').classList.add('hidden');
-      document.getElementById('syndicateCollegeFields').classList.add('hidden');
-      if (this.value === 'Division Campus Secretary') document.getElementById('divisionSection').classList.remove('hidden');
-      if (this.value === 'Campus Unit Leader') document.getElementById('campusStudentSection').classList.remove('hidden');
-      if (this.value === 'District Campus Syndicate') document.getElementById('syndicateStudentSection').classList.remove('hidden');
+      resetConditionalSections();
+      if (this.value === 'Division Campus Secretary') {
+        document.getElementById('divisionSection').classList.remove('hidden');
+      } else if (this.value === 'Campus Unit Leader') {
+        document.getElementById('collegeSection').classList.remove('hidden');
+      } else if (this.value === 'District Campus Syndicate') {
+        document.getElementById('syndicateStudentSection').classList.remove('hidden');
+      }
     });
   });
 
   document.querySelectorAll('input[name="isCampusStudent"]').forEach(function(r) {
     r.addEventListener('change', function() {
-      if (this.value === 'Yes') document.getElementById('syndicateCollegeFields').classList.remove('hidden');
-      else document.getElementById('syndicateCollegeFields').classList.add('hidden');
+      if (this.value === 'Yes') {
+        document.getElementById('collegeSection').classList.remove('hidden');
+      } else {
+        document.getElementById('collegeSection').classList.add('hidden');
+        document.querySelectorAll('input[name="collegeType"]').forEach(function(r) { r.checked = false; });
+        document.getElementById('collegeName').value = '';
+        document.getElementById('courseYear').value = '';
+      }
     });
   });
 
@@ -442,9 +467,10 @@
   function handleSubmit() {
     var err = document.getElementById('errorMsg');
     err.style.display = 'none';
-    var fullName = document.getElementById('fullName').value.trim();
-    var mobile = document.getElementById('mobile').value.trim();
-    var district = document.getElementById('district').value;
+
+    var fullName    = document.getElementById('fullName').value.trim();
+    var mobile      = document.getElementById('mobile').value.trim();
+    var district    = document.getElementById('district').value;
     var designation = getRadioValue('designation');
 
     if (!fullName || !mobile || !district || !designation) {
@@ -452,32 +478,68 @@
       err.style.display = 'block'; return;
     }
 
-    var formData = { fullName, mobileNumber: mobile, campusDistrict: district, designation, division: '', collegeType: '', collegeName: '', courseYear: '', isCampusStudent: '' };
+    var formData = {
+      fullName:        fullName,
+      mobileNumber:    mobile,
+      campusDistrict:  district,
+      designation:     designation,
+      division:        '',
+      isCampusStudent: '',
+      collegeType:     '',
+      collegeName:     '',
+      courseYear:      ''
+    };
 
     if (designation === 'Division Campus Secretary') {
       var div = document.getElementById('division').value;
-      if (!div) { err.textContent = 'Please select a division.'; err.style.display = 'block'; return; }
+      if (!div) {
+        err.textContent = 'Please select a division.';
+        err.style.display = 'block'; return;
+      }
       formData.division = div;
+
     } else if (designation === 'Campus Unit Leader') {
-      var ct = getRadioValue('collegeType'), cn = document.getElementById('collegeName').value.trim(), cy = document.getElementById('courseYear').value.trim();
-      if (!ct || !cn || !cy) { err.textContent = 'Please fill in all college details.'; err.style.display = 'block'; return; }
-      formData.collegeType = ct; formData.collegeName = cn; formData.courseYear = cy;
+      var ct = getRadioValue('collegeType');
+      var cn = document.getElementById('collegeName').value.trim();
+      var cy = document.getElementById('courseYear').value.trim();
+      if (!ct || !cn || !cy) {
+        err.textContent = 'Please fill in all college details.';
+        err.style.display = 'block'; return;
+      }
+      formData.collegeType = ct;
+      formData.collegeName = cn;
+      formData.courseYear  = cy;
+
     } else if (designation === 'District Campus Syndicate') {
       var is = getRadioValue('isCampusStudent');
-      if (!is) { err.textContent = 'Please indicate if you are a campus student.'; err.style.display = 'block'; return; }
+      if (!is) {
+        err.textContent = 'Please indicate if you are a campus student.';
+        err.style.display = 'block'; return;
+      }
       formData.isCampusStudent = is;
       if (is === 'Yes') {
-        var sct = getRadioValue('synCollegeType'), scn = document.getElementById('synCollegeName').value.trim(), scy = document.getElementById('synCourseYear').value.trim();
-        if (!sct || !scn || !scy) { err.textContent = 'Please fill in all college details.'; err.style.display = 'block'; return; }
-        formData.collegeType = sct; formData.collegeName = scn; formData.courseYear = scy;
+        var sct = getRadioValue('collegeType');
+        var scn = document.getElementById('collegeName').value.trim();
+        var scy = document.getElementById('courseYear').value.trim();
+        if (!sct || !scn || !scy) {
+          err.textContent = 'Please fill in all college details.';
+          err.style.display = 'block'; return;
+        }
+        formData.collegeType = sct;
+        formData.collegeName = scn;
+        formData.courseYear  = scy;
       }
     }
 
     var btn = document.getElementById('submitBtn');
     btn.disabled = true; btn.textContent = 'Registering…';
 
-    google.script.run
-      .withSuccessHandler(function(result) {
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(formData)
+    })
+      .then(function(res) { return res.json(); })
+      .then(function(result) {
         if (result.success) {
           document.getElementById('formArea').style.display = 'none';
           document.getElementById('successMsg').style.display = 'block';
@@ -487,12 +549,11 @@
           btn.disabled = false; btn.textContent = 'Register';
         }
       })
-      .withFailureHandler(function() {
+      .catch(function() {
         err.textContent = 'Submission failed. Please try again.';
         err.style.display = 'block';
         btn.disabled = false; btn.textContent = 'Register';
-      })
-      .submitForm(formData);
+      });
   }
 </script>
 </body>
