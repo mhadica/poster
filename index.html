@@ -389,13 +389,15 @@
 </div>
 
 <script>
-  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyi13ymVkKwNWdl9VRsasZDyhPOwA8ZbuplBxX1ikKtklNEElzn9T447X-QgnJLdCWcYg/exec'; 
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw7fyho2i8-Eriwawv5UnTqdrhQmKYxICdTjsSMlkCIxCSwdFgD-pK_5TlmPduMGms7IA/exec'; // 🔁 paste your /exec URL here
 
   var divisionData = {};
 
-  fetch(APPS_SCRIPT_URL + '?action=getDistrictsAndDivisions')
-    .then(function(res) { return res.json(); })
-    .then(function(result) {
+  // JSONP to bypass CORS for GET (loading districts/divisions)
+  function loadDistrictsAndDivisions() {
+    var callbackName = 'jsonpCallback_' + Date.now();
+
+    window[callbackName] = function(result) {
       var districtSelect = document.getElementById('district');
       result.districts.forEach(function(d) {
         var opt = document.createElement('option');
@@ -403,10 +405,21 @@
         districtSelect.appendChild(opt);
       });
       divisionData = result.divisionMap;
-    })
-    .catch(function() {
-      console.error('Failed to load districts. Check your Apps Script URL.');
-    });
+      document.body.removeChild(script);
+      delete window[callbackName];
+    };
+
+    var script = document.createElement('script');
+    script.src = APPS_SCRIPT_URL
+      + '?action=getDistrictsAndDivisions'
+      + '&callback=' + callbackName;
+    script.onerror = function() {
+      console.error('Failed to load districts. Check your Apps Script URL and deployment.');
+    };
+    document.body.appendChild(script);
+  }
+
+  loadDistrictsAndDivisions();
 
   document.getElementById('district').addEventListener('change', function() {
     var district = this.value;
@@ -533,20 +546,16 @@
     var btn = document.getElementById('submitBtn');
     btn.disabled = true; btn.textContent = 'Registering…';
 
+    // POST via no-cors fetch (Apps Script accepts this)
     fetch(APPS_SCRIPT_URL, {
       method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(formData)
     })
-      .then(function(res) { return res.json(); })
-      .then(function(result) {
-        if (result.success) {
-          document.getElementById('formArea').style.display = 'none';
-          document.getElementById('successMsg').style.display = 'block';
-        } else {
-          err.textContent = 'Error: ' + result.error;
-          err.style.display = 'block';
-          btn.disabled = false; btn.textContent = 'Register';
-        }
+      .then(function() {
+        document.getElementById('formArea').style.display = 'none';
+        document.getElementById('successMsg').style.display = 'block';
       })
       .catch(function() {
         err.textContent = 'Submission failed. Please try again.';
