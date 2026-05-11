@@ -155,6 +155,60 @@
       background: #fff;
     }
 
+    .hl-select:disabled {
+      opacity: 0.72;
+      cursor: wait;
+      color: #6b5340;
+    }
+
+    .hl-district-status {
+      font-size: 12px;
+      margin-top: 8px;
+      color: #9e845a;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.4;
+    }
+
+    .hl-district-status.is-visible { display: flex; }
+
+    .hl-district-status.is-loading::before {
+      content: '';
+      flex-shrink: 0;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #e8d9bc;
+      border-top-color: #c9933a;
+      border-radius: 50%;
+      animation: hl-spin 0.65s linear infinite;
+    }
+
+    .hl-district-status.is-error { color: #a32d2d; }
+
+    .hl-district-status.is-error::before { display: none; }
+
+    @keyframes hl-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .hl-retry-load {
+      margin-left: 4px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #1a1207;
+      background: #f0e4d0;
+      border: 1px solid #d9c49a;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .hl-retry-load:hover { background: #e8d9bc; }
+
     .hl-radio-group {
       display: flex;
       flex-direction: column;
@@ -215,7 +269,7 @@
     }
 
     .hl-submit:hover { background: #3a2810; }
-    .hl-submit:disabled { background: #9e845a; cursor: not-allowed; }
+    .hl-submit:disabled { background: #9e845a; cursor: not-allowed; opacity: 0.88; }
 
     .hl-error {
       color: #a32d2d;
@@ -299,9 +353,12 @@
 
     <div class="hl-field">
       <label class="hl-label">Campus District</label>
-      <select class="hl-select" id="district">
-        <option value="">— Select District —</option>
+      <select class="hl-select" id="district" disabled>
+        <option value="">Loading districts…</option>
       </select>
+      <div class="hl-district-status is-visible is-loading" id="districtStatus" role="status" aria-live="polite">
+        <span>Loading districts and divisions</span>
+      </div>
     </div>
 
     <hr class="hl-divider">
@@ -384,7 +441,7 @@
     </div>
 
     <div class="hl-error" id="errorMsg"></div>
-    <button class="hl-submit" id="submitBtn" onclick="handleSubmit()">Register</button>
+    <button class="hl-submit" id="submitBtn" type="button" onclick="handleSubmit()" disabled>Register</button>
   </div>
 
   <div class="hl-success" id="successMsg">
@@ -402,24 +459,80 @@
   var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwikK1tHH4GcT2BRcuaQycmlUNkJfoLxCOwhNAZ-xhPb08XU22ouCH1z3J4Grwoc4TDew/exec'; // 🔁 paste your /exec URL here
 
   var divisionData = {};
+  var locationsReady = false;
+
+  function setDistrictStatus(mode, message) {
+    var el = document.getElementById('districtStatus');
+    if (!el) return;
+    el.className = 'hl-district-status';
+    if (mode === 'loading') {
+      el.classList.add('is-visible', 'is-loading');
+      el.innerHTML = '<span>Loading districts and divisions</span>';
+    } else if (mode === 'error') {
+      el.classList.add('is-visible', 'is-error');
+      el.innerHTML =
+        '<span>' + (message || 'Could not load lists.') + '</span> '
+        + '<button type="button" class="hl-retry-load" id="districtRetryBtn">Retry</button>';
+      var btn = document.getElementById('districtRetryBtn');
+      if (btn) btn.onclick = function() { loadDistrictsAndDivisions(); };
+    } else {
+      el.innerHTML = '';
+    }
+  }
 
   // JSONP to bypass CORS for GET (loading districts/divisions)
   function loadDistrictsAndDivisions() {
+    var districtSelect = document.getElementById('district');
+    var divisionSelect = document.getElementById('division');
+    locationsReady = false;
+    var submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.title = 'Loading districts and divisions…';
+    districtSelect.disabled = true;
+    districtSelect.innerHTML = '<option value="">Loading districts…</option>';
+    divisionSelect.innerHTML = '<option value="">— Select Division —</option>';
+    setDistrictStatus('loading');
+
     var callbackName = 'jsonpCallback_' + Date.now();
 
     window[callbackName] = function(result) {
       try {
-        if (result && result.error) {
+        var list = (result && result.districts) ? result.districts : [];
+        var hasError = result && result.error;
+        if (hasError) {
           console.error('Districts API:', result.error);
         }
-        var districtSelect = document.getElementById('district');
-        var list = (result && result.districts) ? result.districts : [];
+
+        if (!list.length && (hasError || !result)) {
+          districtSelect.innerHTML = '<option value="">— Unavailable —</option>';
+          districtSelect.disabled = false;
+          locationsReady = false;
+          submitBtn.disabled = true;
+          submitBtn.title = 'Load districts first (use Retry)';
+          setDistrictStatus('error', hasError ? String(result.error) : 'Districts could not be loaded.');
+          return;
+        }
+
+        districtSelect.innerHTML = '<option value="">— Select District —</option>';
         list.forEach(function(d) {
           var opt = document.createElement('option');
           opt.value = d; opt.textContent = d;
           districtSelect.appendChild(opt);
         });
+        districtSelect.disabled = false;
         divisionData = (result && result.divisionMap) ? result.divisionMap : {};
+        locationsReady = true;
+        submitBtn.disabled = false;
+        submitBtn.title = '';
+        setDistrictStatus('idle');
+      } catch (e) {
+        console.error(e);
+        districtSelect.innerHTML = '<option value="">— Unavailable —</option>';
+        districtSelect.disabled = false;
+        locationsReady = false;
+        submitBtn.disabled = true;
+        submitBtn.title = 'Load districts first (use Retry)';
+        setDistrictStatus('error', 'Something went wrong loading districts.');
       } finally {
         if (script.parentNode) document.body.removeChild(script);
         delete window[callbackName];
@@ -432,6 +545,18 @@
       + '&callback=' + encodeURIComponent(callbackName);
     script.onerror = function() {
       console.error('Failed to load districts (network or non-JavaScript response). Check Web App URL, deploy as "Anyone", and that the Apps Script returns JSONP without server errors.');
+      districtSelect.innerHTML = '<option value="">— Unavailable —</option>';
+      districtSelect.disabled = false;
+      locationsReady = false;
+      submitBtn.disabled = true;
+      submitBtn.title = 'Load districts first (use Retry)';
+      setDistrictStatus('error', 'Could not reach the server. Check your connection and Apps Script deployment.');
+      try {
+        if (script.parentNode) document.body.removeChild(script);
+      } catch (ignore) {}
+      try {
+        delete window[callbackName];
+      } catch (ignore2) {}
     };
     document.body.appendChild(script);
   }
@@ -501,6 +626,11 @@
     var mobile      = document.getElementById('mobile').value.trim();
     var district    = document.getElementById('district').value;
     var designation = getRadioValue('designation');
+
+    if (!locationsReady) {
+      err.textContent = 'Please wait until districts and divisions finish loading.';
+      err.style.display = 'block'; return;
+    }
 
     if (!fullName || !mobile || !district || !designation) {
       err.textContent = 'Please fill in all required fields.';
