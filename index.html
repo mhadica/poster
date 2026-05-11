@@ -255,6 +255,16 @@
 
     .hl-footer span { color: #c9933a; font-weight: 600; }
 
+    .hl-form-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #2c1f0e;
+      text-align: center;
+      margin: 0 0 20px;
+      line-height: 1.25;
+    }
+
     .hidden { display: none !important; }
   </style>
 </head>
@@ -267,13 +277,13 @@
     <span>2026 May 24</span>
     <span class="hl-meta-dot"></span>
     <span>Kottayam</span>
-    <span class="hl-meta-dot"></span>
-    <span>Delegate Registration</span>
   </div>
 </div>
 
 <div class="hl-card">
   <div id="formArea">
+
+    <div class="hl-form-title">Delegate Registration</div>
 
     <div class="hl-section-label">Personal Details</div>
 
@@ -385,11 +395,11 @@
 </div>
 
 <div class="hl-footer">
-  <span>Campus Student</span> &nbsp;·&nbsp; SSF Kerala
+  <span>Campus Syndicate</span> &nbsp;•&nbsp; SSF Kerala
 </div>
 
 <script>
-  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw7fyho2i8-Eriwawv5UnTqdrhQmKYxICdTjsSMlkCIxCSwdFgD-pK_5TlmPduMGms7IA/exec'; // 🔁 paste your /exec URL here
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwikK1tHH4GcT2BRcuaQycmlUNkJfoLxCOwhNAZ-xhPb08XU22ouCH1z3J4Grwoc4TDew/exec'; // 🔁 paste your /exec URL here
 
   var divisionData = {};
 
@@ -398,23 +408,30 @@
     var callbackName = 'jsonpCallback_' + Date.now();
 
     window[callbackName] = function(result) {
-      var districtSelect = document.getElementById('district');
-      result.districts.forEach(function(d) {
-        var opt = document.createElement('option');
-        opt.value = d; opt.textContent = d;
-        districtSelect.appendChild(opt);
-      });
-      divisionData = result.divisionMap;
-      document.body.removeChild(script);
-      delete window[callbackName];
+      try {
+        if (result && result.error) {
+          console.error('Districts API:', result.error);
+        }
+        var districtSelect = document.getElementById('district');
+        var list = (result && result.districts) ? result.districts : [];
+        list.forEach(function(d) {
+          var opt = document.createElement('option');
+          opt.value = d; opt.textContent = d;
+          districtSelect.appendChild(opt);
+        });
+        divisionData = (result && result.divisionMap) ? result.divisionMap : {};
+      } finally {
+        if (script.parentNode) document.body.removeChild(script);
+        delete window[callbackName];
+      }
     };
 
     var script = document.createElement('script');
     script.src = APPS_SCRIPT_URL
       + '?action=getDistrictsAndDivisions'
-      + '&callback=' + callbackName;
+      + '&callback=' + encodeURIComponent(callbackName);
     script.onerror = function() {
-      console.error('Failed to load districts. Check your Apps Script URL and deployment.');
+      console.error('Failed to load districts (network or non-JavaScript response). Check Web App URL, deploy as "Anyone", and that the Apps Script returns JSONP without server errors.');
     };
     document.body.appendChild(script);
   }
