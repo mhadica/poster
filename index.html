@@ -185,7 +185,6 @@
     }
 
     .hl-district-status.is-error { color: #a32d2d; }
-
     .hl-district-status.is-error::before { display: none; }
 
     @keyframes hl-spin {
@@ -278,6 +277,69 @@
       display: none;
     }
 
+    /* ── Phone gate ── */
+    #phoneGate { }
+
+    .hl-gate-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: #2c1f0e;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .hl-gate-sub {
+      font-size: 12.5px;
+      color: #9e845a;
+      text-align: center;
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+
+    .hl-gate-spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #e8d9bc;
+      border-top-color: #c9933a;
+      border-radius: 50%;
+      animation: hl-spin 0.65s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    /* ── Already-registered banner ── */
+    #alreadyRegistered {
+      display: none;
+      text-align: center;
+      padding: 28px 16px 24px;
+    }
+
+    .hl-already-icon {
+      font-size: 38px;
+      margin-bottom: 12px;
+    }
+
+    .hl-already-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 19px;
+      color: #2c1f0e;
+      margin-bottom: 6px;
+    }
+
+    .hl-already-sub {
+      font-size: 13px;
+      color: #9e845a;
+      line-height: 1.55;
+    }
+
+    .hl-already-name {
+      font-weight: 600;
+      color: #c9933a;
+    }
+
+    /* ── Success ── */
     .hl-success {
       display: none;
       text-align: center;
@@ -335,7 +397,31 @@
 </div>
 
 <div class="hl-card">
-  <div id="formArea">
+
+  <!-- ① PHONE GATE -->
+  <div id="phoneGate">
+    <div class="hl-gate-title">Welcome</div>
+    <div class="hl-gate-sub">Enter your mobile number to continue.<br>We'll check if you're already registered.</div>
+
+    <div class="hl-field">
+      <label class="hl-label">Mobile Number</label>
+      <input class="hl-input" type="tel" id="gateMobile" placeholder="10-digit mobile number" maxlength="15"
+             onkeydown="if(event.key==='Enter') verifyPhone()">
+    </div>
+
+    <div class="hl-error" id="gateError"></div>
+    <button class="hl-submit" type="button" onclick="verifyPhone()" id="gateBtn">Continue</button>
+  </div>
+
+  <!-- ② ALREADY REGISTERED -->
+  <div id="alreadyRegistered">
+    <div class="hl-already-icon">✅</div>
+    <div class="hl-already-title">Already Registered</div>
+    <div class="hl-already-sub" id="alreadyMsg">You have already registered. Thanks for confirming!</div>
+  </div>
+
+  <!-- ③ REGISTRATION FORM -->
+  <div id="formArea" class="hidden">
 
     <div class="hl-form-title">Delegate Registration</div>
 
@@ -411,9 +497,7 @@
       </div>
     </div>
 
-    <!-- Shared college fields:
-         shown immediately for Campus Unit Leader,
-         shown after "Yes" for District Campus Syndicate -->
+    <!-- Shared college fields -->
     <div id="collegeSection" class="hidden">
       <hr class="hl-divider">
       <div class="hl-section-label">College Details</div>
@@ -444,11 +528,13 @@
     <button class="hl-submit" id="submitBtn" type="button" onclick="handleSubmit()" disabled>Register</button>
   </div>
 
+  <!-- ④ SUCCESS -->
   <div class="hl-success" id="successMsg">
     <div class="hl-success-icon">📖</div>
     <div class="hl-success-title">Registration complete</div>
     <div class="hl-success-sub">Welcome to the Human Library, Learner's Commune 2026</div>
   </div>
+
 </div>
 
 <div class="hl-footer">
@@ -456,11 +542,86 @@
 </div>
 
 <script>
-  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzByXsOJZRfMAOUy90u1CkyL0nsY35SiE08OwKjlxUIJedpTSAIf31DlE8-kO-gy3x/exec'; // 🔁 paste your /exec URL here
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzByXsOJZRfMAOUy90u1CkyL0nsY35SiE08OwKjlxUIJedpTSAIf31DlE8-kO-gy3x/exec';
 
   var divisionData = {};
   var locationsReady = false;
 
+  /* ─────────────────────────────────────────────
+     PHONE GATE
+  ───────────────────────────────────────────── */
+  function verifyPhone() {
+    var gateErr = document.getElementById('gateError');
+    gateErr.style.display = 'none';
+
+    var raw = document.getElementById('gateMobile').value.trim();
+    var digits = raw.replace(/\D/g, '');
+    if (digits.length < 10) {
+      gateErr.textContent = 'Please enter a valid 10-digit mobile number.';
+      gateErr.style.display = 'block';
+      return;
+    }
+
+    var btn = document.getElementById('gateBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="hl-gate-spinner"></span>Checking…';
+
+    var callbackName = 'checkCb_' + Date.now();
+
+    window[callbackName] = function(result) {
+      btn.disabled = false;
+      btn.textContent = 'Continue';
+      try {
+        if (result && result.found) {
+          // Already registered
+          document.getElementById('phoneGate').style.display = 'none';
+          var nameStr = result.name ? (' <span class="hl-already-name">' + escHtml(result.name) + '</span>,') : '';
+          document.getElementById('alreadyMsg').innerHTML =
+            'Hi' + nameStr + ' you have already registered for Human Library, Learner\'s Commune 2026. Thanks for confirming! 🙏';
+          document.getElementById('alreadyRegistered').style.display = 'block';
+        } else {
+          // Not found — proceed to form, pre-fill mobile
+          document.getElementById('phoneGate').style.display = 'none';
+          document.getElementById('formArea').classList.remove('hidden');
+          document.getElementById('mobile').value = raw;
+          loadDistrictsAndDivisions();
+        }
+      } catch (e) {
+        gateErr.textContent = 'Something went wrong. Please try again.';
+        gateErr.style.display = 'block';
+      } finally {
+        if (script.parentNode) document.body.removeChild(script);
+        delete window[callbackName];
+      }
+    };
+
+    var script = document.createElement('script');
+    script.src = APPS_SCRIPT_URL
+      + '?action=checkMobile'
+      + '&mobile=' + encodeURIComponent(digits)
+      + '&callback=' + encodeURIComponent(callbackName);
+    script.onerror = function() {
+      btn.disabled = false;
+      btn.textContent = 'Continue';
+      gateErr.textContent = 'Could not reach the server. Check your connection and try again.';
+      gateErr.style.display = 'block';
+      try { if (script.parentNode) document.body.removeChild(script); } catch(x){}
+      try { delete window[callbackName]; } catch(x){}
+    };
+    document.body.appendChild(script);
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* ─────────────────────────────────────────────
+     DISTRICTS / DIVISIONS LOADER
+  ───────────────────────────────────────────── */
   function setDistrictStatus(mode, message) {
     var el = document.getElementById('districtStatus');
     if (!el) return;
@@ -480,7 +641,6 @@
     }
   }
 
-  // JSONP to bypass CORS for GET (loading districts/divisions)
   function loadDistrictsAndDivisions() {
     var districtSelect = document.getElementById('district');
     var divisionSelect = document.getElementById('division');
@@ -499,9 +659,7 @@
       try {
         var list = (result && result.districts) ? result.districts : [];
         var hasError = result && result.error;
-        if (hasError) {
-          console.error('Districts API:', result.error);
-        }
+        if (hasError) console.error('Districts API:', result.error);
 
         if (!list.length && (hasError || !result)) {
           districtSelect.innerHTML = '<option value="">— Unavailable —</option>';
@@ -544,24 +702,18 @@
       + '?action=getDistrictsAndDivisions'
       + '&callback=' + encodeURIComponent(callbackName);
     script.onerror = function() {
-      console.error('Failed to load districts (network or non-JavaScript response). Check Web App URL, deploy as "Anyone", and that the Apps Script returns JSONP without server errors.');
+      console.error('Failed to load districts.');
       districtSelect.innerHTML = '<option value="">— Unavailable —</option>';
       districtSelect.disabled = false;
       locationsReady = false;
       submitBtn.disabled = true;
       submitBtn.title = 'Load districts first (use Retry)';
       setDistrictStatus('error', 'Could not reach the server. Check your connection and Apps Script deployment.');
-      try {
-        if (script.parentNode) document.body.removeChild(script);
-      } catch (ignore) {}
-      try {
-        delete window[callbackName];
-      } catch (ignore2) {}
+      try { if (script.parentNode) document.body.removeChild(script); } catch(x){}
+      try { delete window[callbackName]; } catch(x){}
     };
     document.body.appendChild(script);
   }
-
-  loadDistrictsAndDivisions();
 
   document.getElementById('district').addEventListener('change', function() {
     var district = this.value;
@@ -576,6 +728,9 @@
     }
   });
 
+  /* ─────────────────────────────────────────────
+     CONDITIONAL FORM SECTIONS
+  ───────────────────────────────────────────── */
   function resetConditionalSections() {
     document.getElementById('divisionSection').classList.add('hidden');
     document.getElementById('syndicateStudentSection').classList.add('hidden');
@@ -613,6 +768,9 @@
     });
   });
 
+  /* ─────────────────────────────────────────────
+     FORM SUBMISSION
+  ───────────────────────────────────────────── */
   function getRadioValue(name) {
     var el = document.querySelector('input[name="' + name + '"]:checked');
     return el ? el.value : '';
@@ -693,7 +851,6 @@
     var btn = document.getElementById('submitBtn');
     btn.disabled = true; btn.textContent = 'Registering…';
 
-    // POST via no-cors fetch (Apps Script accepts this)
     fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
