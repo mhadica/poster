@@ -12,7 +12,6 @@
       font-family: 'Inter', sans-serif;
       background: #fdf8f2;
       min-height: 100vh;
-      padding-bottom: 0;
     }
 
     .hl-banner {
@@ -22,7 +21,6 @@
       text-align: center;
       border-bottom: 3px solid #c9933a;
     }
-
     .hl-banner::before {
       content: '';
       display: block;
@@ -31,16 +29,6 @@
       background: #c9933a;
       margin: 0 auto 14px;
     }
-
-    .hl-overline {
-      font-size: 10px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: #c9933a;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
     .hl-title {
       font-family: 'Playfair Display', Georgia, serif;
       font-size: 34px;
@@ -49,7 +37,6 @@
       margin: 0 0 4px;
       line-height: 1.15;
     }
-
     .hl-subtitle {
       font-family: 'Playfair Display', Georgia, serif;
       font-size: 15px;
@@ -57,7 +44,6 @@
       color: #d4b57a;
       margin-bottom: 14px;
     }
-
     .hl-meta {
       display: flex;
       justify-content: center;
@@ -68,10 +54,8 @@
       letter-spacing: 0.06em;
       flex-wrap: wrap;
     }
-
     .hl-meta-dot {
-      width: 3px;
-      height: 3px;
+      width: 3px; height: 3px;
       border-radius: 50%;
       background: #c9933a;
       display: inline-block;
@@ -81,12 +65,11 @@
       background: #fffdf7;
       border: 1px solid #e8d9bc;
       border-radius: 4px;
-      margin: 28px auto 0;
+      margin: 28px auto 36px;
       max-width: 500px;
       padding: 28px 28px 24px;
       position: relative;
     }
-
     .hl-card::before {
       content: '';
       display: block;
@@ -108,7 +91,6 @@
       align-items: center;
       gap: 8px;
     }
-
     .hl-section-label::after {
       content: '';
       flex: 1;
@@ -117,7 +99,6 @@
     }
 
     .hl-field { margin-bottom: 18px; }
-
     .hl-label {
       display: block;
       font-size: 12px;
@@ -139,7 +120,6 @@
       font-family: 'Inter', sans-serif;
       transition: border-color 0.18s;
     }
-
     .hl-select {
       appearance: none;
       -webkit-appearance: none;
@@ -149,12 +129,10 @@
       background-color: #fdf9f2;
       padding-right: 36px;
     }
-
     .hl-input:focus, .hl-select:focus {
       border-color: #c9933a;
       background: #fff;
     }
-
     .hl-select:disabled {
       opacity: 0.72;
       cursor: wait;
@@ -170,26 +148,20 @@
       gap: 8px;
       line-height: 1.4;
     }
-
     .hl-district-status.is-visible { display: flex; }
-
     .hl-district-status.is-loading::before {
       content: '';
       flex-shrink: 0;
-      width: 14px;
-      height: 14px;
+      width: 14px; height: 14px;
       border: 2px solid #e8d9bc;
       border-top-color: #c9933a;
       border-radius: 50%;
       animation: hl-spin 0.65s linear infinite;
     }
-
     .hl-district-status.is-error { color: #a32d2d; }
     .hl-district-status.is-error::before { display: none; }
 
-    @keyframes hl-spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes hl-spin { to { transform: rotate(360deg); } }
 
     .hl-retry-load {
       margin-left: 4px;
@@ -205,15 +177,9 @@
       border-radius: 3px;
       cursor: pointer;
     }
-
     .hl-retry-load:hover { background: #e8d9bc; }
 
-    .hl-radio-group {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
+    .hl-radio-group { display: flex; flex-direction: column; gap: 7px; }
     .hl-radio-option {
       display: flex;
       align-items: center;
@@ -228,17 +194,14 @@
       font-family: 'Inter', sans-serif;
       transition: border-color 0.15s, background 0.15s;
     }
-
     .hl-radio-option:has(input:checked) {
       border-color: #c9933a;
       background: #fdf0d8;
       color: #7a4c0d;
       font-weight: 500;
     }
-
     .hl-radio-option input[type="radio"] {
-      width: 15px;
-      height: 15px;
+      width: 15px; height: 15px;
       accent-color: #c9933a;
       margin: 0;
       flex-shrink: 0;
@@ -266,9 +229,28 @@
       margin-top: 8px;
       transition: background 0.18s;
     }
-
     .hl-submit:hover { background: #3a2810; }
     .hl-submit:disabled { background: #9e845a; cursor: not-allowed; opacity: 0.88; }
+
+    /* Confirm seat button — gold style */
+    .hl-confirm-btn {
+      width: 100%;
+      padding: 14px;
+      background: #c9933a;
+      color: #1a1207;
+      border: none;
+      border-radius: 3px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.18s;
+    }
+    .hl-confirm-btn:hover { background: #b8822e; }
+    .hl-confirm-btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
     .hl-error {
       color: #a32d2d;
@@ -277,9 +259,7 @@
       display: none;
     }
 
-    /* ── Phone gate ── */
-    #phoneGate { }
-
+    /* Gate */
     .hl-gate-title {
       font-family: 'Playfair Display', Georgia, serif;
       font-size: 20px;
@@ -288,7 +268,6 @@
       text-align: center;
       margin-bottom: 6px;
     }
-
     .hl-gate-sub {
       font-size: 12.5px;
       color: #9e845a;
@@ -296,11 +275,9 @@
       margin-bottom: 22px;
       line-height: 1.5;
     }
-
     .hl-gate-spinner {
       display: inline-block;
-      width: 14px;
-      height: 14px;
+      width: 14px; height: 14px;
       border: 2px solid #e8d9bc;
       border-top-color: #c9933a;
       border-radius: 50%;
@@ -309,52 +286,63 @@
       margin-right: 6px;
     }
 
-    /* ── Already-registered banner ── */
-    #alreadyRegistered {
+    /* Confirm seat screen */
+    #confirmSeatScreen {
+      display: none;
+      text-align: center;
+      padding: 10px 0 8px;
+    }
+    .hl-confirm-icon { font-size: 38px; margin-bottom: 12px; }
+    .hl-confirm-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      color: #2c1f0e;
+      margin-bottom: 8px;
+    }
+    .hl-confirm-sub {
+      font-size: 13px;
+      color: #9e845a;
+      line-height: 1.55;
+      margin-bottom: 4px;
+    }
+    .hl-confirm-name {
+      font-weight: 600;
+      color: #c9933a;
+    }
+
+    /* Already confirmed screen */
+    #alreadyConfirmedScreen {
       display: none;
       text-align: center;
       padding: 28px 16px 24px;
     }
-
-    .hl-already-icon {
-      font-size: 38px;
-      margin-bottom: 12px;
-    }
-
+    .hl-already-icon { font-size: 38px; margin-bottom: 12px; }
     .hl-already-title {
       font-family: 'Playfair Display', Georgia, serif;
       font-size: 19px;
       color: #2c1f0e;
       margin-bottom: 6px;
     }
-
     .hl-already-sub {
       font-size: 13px;
       color: #9e845a;
       line-height: 1.55;
     }
+    .hl-already-name { font-weight: 600; color: #c9933a; }
 
-    .hl-already-name {
-      font-weight: 600;
-      color: #c9933a;
-    }
-
-    /* ── Success ── */
+    /* Success */
     .hl-success {
       display: none;
       text-align: center;
       padding: 32px 20px;
     }
-
     .hl-success-icon { font-size: 40px; margin-bottom: 12px; }
-
     .hl-success-title {
       font-family: 'Playfair Display', Georgia, serif;
       font-size: 21px;
       color: #2c1f0e;
       margin-bottom: 6px;
     }
-
     .hl-success-sub { font-size: 13px; color: #9e845a; }
 
     .hl-footer {
@@ -365,10 +353,8 @@
       font-size: 11px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      margin-top: 36px;
       border-top: 2px solid #c9933a;
     }
-
     .hl-footer span { color: #c9933a; font-weight: 600; }
 
     .hl-form-title {
@@ -392,55 +378,59 @@
   <div class="hl-meta">
     <span>2026 Jun 28</span>
     <span class="hl-meta-dot"></span>
-    <span>Kollam</span>
+    <span>Kottayam</span>
   </div>
 </div>
 
 <div class="hl-card">
 
-  <!-- ① PHONE GATE -->
+  <!-- SCREEN 1: PHONE GATE -->
   <div id="phoneGate">
     <div class="hl-gate-title">Welcome</div>
     <div class="hl-gate-sub">Enter your mobile number to continue.<br>We'll check if you're already registered.</div>
-
     <div class="hl-field">
       <label class="hl-label">Mobile Number</label>
       <input class="hl-input" type="tel" id="gateMobile" placeholder="10-digit mobile number" maxlength="15"
              onkeydown="if(event.key==='Enter') verifyPhone()">
     </div>
-
     <div class="hl-error" id="gateError"></div>
     <button class="hl-submit" type="button" onclick="verifyPhone()" id="gateBtn">Continue</button>
   </div>
 
-  <!-- ② ALREADY REGISTERED -->
-  <div id="alreadyRegistered">
-    <div class="hl-already-icon">✅</div>
-    <div class="hl-already-title">Already Registered</div>
-    <div class="hl-already-sub" id="alreadyMsg">You have already registered. Thanks for confirming!</div>
+  <!-- SCREEN 2: CONFIRM SEAT (registered but not yet confirmed) -->
+  <div id="confirmSeatScreen">
+    <div class="hl-confirm-icon">&#x1F4DA;</div>
+    <div class="hl-confirm-title">Welcome back<span id="confirmNameDisplay"></span>!</div>
+    <div class="hl-confirm-sub">You are registered for Human Library, Learner's Commune 2026.</div>
+    <div class="hl-confirm-sub" style="margin-top:6px;">Will you be present for the session?</div>
+    <div class="hl-error" id="confirmError"></div>
+    <button class="hl-confirm-btn" type="button" onclick="doConfirmSeat()" id="confirmSeatBtn">&#x2714; Confirm the Seat</button>
   </div>
 
-  <!-- ③ REGISTRATION FORM -->
+  <!-- SCREEN 3: ALREADY CONFIRMED -->
+  <div id="alreadyConfirmedScreen">
+    <div class="hl-already-icon">&#x2705;</div>
+    <div class="hl-already-title">Already Confirmed</div>
+    <div class="hl-already-sub" id="alreadyConfirmedMsg">You have already registered and confirmed your seat. Thanks for confirming!</div>
+  </div>
+
+  <!-- SCREEN 4: REGISTRATION FORM (new user) -->
   <div id="formArea" class="hidden">
-
     <div class="hl-form-title">Delegate Registration</div>
-
     <div class="hl-section-label">Personal Details</div>
 
     <div class="hl-field">
       <label class="hl-label">Full Name</label>
       <input class="hl-input" type="text" id="fullName" placeholder="Your full name">
     </div>
-
     <div class="hl-field">
       <label class="hl-label">Mobile Number</label>
       <input class="hl-input" type="tel" id="mobile" placeholder="10-digit mobile number" maxlength="15">
     </div>
-
     <div class="hl-field">
       <label class="hl-label">Campus District</label>
       <select class="hl-select" id="district" disabled>
-        <option value="">Loading districts…</option>
+        <option value="">Loading districts...</option>
       </select>
       <div class="hl-district-status is-visible is-loading" id="districtStatus" role="status" aria-live="polite">
         <span>Loading districts and divisions</span>
@@ -449,7 +439,6 @@
 
     <hr class="hl-divider">
     <div class="hl-section-label">Designation</div>
-
     <div class="hl-field">
       <div class="hl-radio-group">
         <label class="hl-radio-option">
@@ -467,19 +456,17 @@
       </div>
     </div>
 
-    <!-- Division Secretary: select division -->
     <div id="divisionSection" class="hidden">
       <hr class="hl-divider">
       <div class="hl-section-label">Division</div>
       <div class="hl-field">
         <label class="hl-label">Select Division</label>
         <select class="hl-select" id="division">
-          <option value="">— Select Division —</option>
+          <option value="">-- Select Division --</option>
         </select>
       </div>
     </div>
 
-    <!-- District Campus Syndicate: ask if campus student -->
     <div id="syndicateStudentSection" class="hidden">
       <hr class="hl-divider">
       <div class="hl-section-label">Campus Student?</div>
@@ -497,7 +484,6 @@
       </div>
     </div>
 
-    <!-- Shared college fields -->
     <div id="collegeSection" class="hidden">
       <hr class="hl-divider">
       <div class="hl-section-label">College Details</div>
@@ -520,7 +506,7 @@
       </div>
       <div class="hl-field">
         <label class="hl-label">Course & Year</label>
-        <input class="hl-input" type="text" id="courseYear" placeholder="e.g. B.Tech – 2nd Year">
+        <input class="hl-input" type="text" id="courseYear" placeholder="e.g. B.Tech - 2nd Year">
       </div>
     </div>
 
@@ -528,28 +514,43 @@
     <button class="hl-submit" id="submitBtn" type="button" onclick="handleSubmit()" disabled>Register</button>
   </div>
 
-  <!-- ④ SUCCESS -->
+  <!-- SCREEN 5: SUCCESS (new registration / already confirmed on 3rd+ visit) -->
   <div class="hl-success" id="successMsg">
-    <div class="hl-success-icon">📖</div>
-    <div class="hl-success-title">Registration complete</div>
-    <div class="hl-success-sub">Welcome to the Human Library, Learner's Commune 2026</div>
+    <div class="hl-success-icon">&#x1F4D6;</div>
+    <div class="hl-success-title" id="successTitle">Registration complete</div>
+    <div class="hl-success-sub" id="successSub">Welcome to the Human Library, Learner's Commune 2026</div>
   </div>
 
 </div>
 
 <div class="hl-footer">
-  <span>Campus Syndicate</span> &nbsp;•&nbsp; SSF Kerala
+  <span>Campus Syndicate</span> &nbsp;&bull;&nbsp; SSF Kerala
 </div>
 
 <script>
-  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzByXsOJZRfMAOUy90u1CkyL0nsY35SiE08OwKjlxUIJedpTSAIf31DlE8-kO-gy3x/exec';
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxh4MzJyLDGjADkRC_hwHf6M_oetmALlQxIGA73PCsWrHFBBsNldAgjcb17DP3BfyJKlA/exec';
 
   var divisionData = {};
   var locationsReady = false;
+  var gateDigits = '';  // store digits from gate for confirmSeat call
 
-  /* ─────────────────────────────────────────────
-     PHONE GATE
-  ───────────────────────────────────────────── */
+  function showOnly(id) {
+    var screens = ['phoneGate', 'confirmSeatScreen', 'alreadyConfirmedScreen', 'formArea', 'successMsg'];
+    screens.forEach(function(s) {
+      var el = document.getElementById(s);
+      if (el) {
+        if (s === id) {
+          el.style.display = '';
+          el.classList.remove('hidden');
+        } else {
+          el.style.display = 'none';
+          el.classList.add('hidden');
+        }
+      }
+    });
+  }
+
+  /* ── PHONE GATE ── */
   function verifyPhone() {
     var gateErr = document.getElementById('gateError');
     gateErr.style.display = 'none';
@@ -562,9 +563,11 @@
       return;
     }
 
+    gateDigits = digits;
+
     var btn = document.getElementById('gateBtn');
     btn.disabled = true;
-    btn.innerHTML = '<span class="hl-gate-spinner"></span>Checking…';
+    btn.innerHTML = '<span class="hl-gate-spinner"></span>Checking...';
 
     var callbackName = 'checkCb_' + Date.now();
 
@@ -573,22 +576,30 @@
       btn.textContent = 'Continue';
       try {
         if (result && result.found) {
-          // Already registered
-          document.getElementById('phoneGate').style.display = 'none';
-          var nameStr = result.name ? (' <span class="hl-already-name">' + escHtml(result.name) + '</span>,') : '';
-          document.getElementById('alreadyMsg').innerHTML =
-            'Hi' + nameStr + ' you have already registered for Human Library, Learner\'s Commune 2026. Thanks for confirming! ';
-          document.getElementById('alreadyRegistered').style.display = 'block';
+          if (result.confirmed) {
+            // 3rd+ visit: already confirmed — show success-style message
+            var nameStr = result.name ? result.name : '';
+            document.getElementById('successTitle').textContent = 'Already Confirmed';
+            document.getElementById('successSub').textContent =
+              'Hi ' + (nameStr ? nameStr + ', y' : 'Y') +
+              'ou have already registered and confirmed your seat. Thanks for confirming!';
+            showOnly('successMsg');
+          } else {
+            // 2nd visit: registered but not confirmed — show confirm seat screen
+            var displayName = result.name ? (', ' + escHtml(result.name)) : '';
+            document.getElementById('confirmNameDisplay').innerHTML = displayName;
+            showOnly('confirmSeatScreen');
+          }
         } else {
-          // Not found — proceed to form, pre-fill mobile
-          document.getElementById('phoneGate').style.display = 'none';
-          document.getElementById('formArea').classList.remove('hidden');
+          // First time — show registration form
           document.getElementById('mobile').value = raw;
+          showOnly('formArea');
           loadDistrictsAndDivisions();
         }
       } catch (e) {
         gateErr.textContent = 'Something went wrong. Please try again.';
         gateErr.style.display = 'block';
+        btn.disabled = false;
       } finally {
         if (script.parentNode) document.body.removeChild(script);
         delete window[callbackName];
@@ -611,6 +622,56 @@
     document.body.appendChild(script);
   }
 
+  /* ── CONFIRM SEAT ── */
+  function doConfirmSeat() {
+    var err = document.getElementById('confirmError');
+    err.style.display = 'none';
+    var btn = document.getElementById('confirmSeatBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="hl-gate-spinner"></span>Confirming...';
+
+    var callbackName = 'confirmCb_' + Date.now();
+
+    window[callbackName] = function(result) {
+      try {
+        if (result && result.success) {
+          document.getElementById('successTitle').textContent = 'Seat Confirmed!';
+          document.getElementById('successSub').textContent =
+            'Your attendance has been confirmed for Human Library, Learner\'s Commune 2026. See you there!';
+          showOnly('successMsg');
+        } else {
+          err.textContent = 'Could not confirm. Please try again.';
+          err.style.display = 'block';
+          btn.disabled = false;
+          btn.innerHTML = '&#x2714; Confirm the Seat';
+        }
+      } catch(e) {
+        err.textContent = 'Something went wrong. Please try again.';
+        err.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = '&#x2714; Confirm the Seat';
+      } finally {
+        if (script.parentNode) document.body.removeChild(script);
+        delete window[callbackName];
+      }
+    };
+
+    var script = document.createElement('script');
+    script.src = APPS_SCRIPT_URL
+      + '?action=confirmSeat'
+      + '&mobile=' + encodeURIComponent(gateDigits)
+      + '&callback=' + encodeURIComponent(callbackName);
+    script.onerror = function() {
+      err.textContent = 'Could not reach the server. Please try again.';
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.innerHTML = '&#x2714; Confirm the Seat';
+      try { if (script.parentNode) document.body.removeChild(script); } catch(x){}
+      try { delete window[callbackName]; } catch(x){}
+    };
+    document.body.appendChild(script);
+  }
+
   function escHtml(str) {
     return String(str)
       .replace(/&/g, '&amp;')
@@ -619,9 +680,7 @@
       .replace(/"/g, '&quot;');
   }
 
-  /* ─────────────────────────────────────────────
-     DISTRICTS / DIVISIONS LOADER
-  ───────────────────────────────────────────── */
+  /* ── DISTRICTS / DIVISIONS LOADER ── */
   function setDistrictStatus(mode, message) {
     var el = document.getElementById('districtStatus');
     if (!el) return;
@@ -631,8 +690,7 @@
       el.innerHTML = '<span>Loading districts and divisions</span>';
     } else if (mode === 'error') {
       el.classList.add('is-visible', 'is-error');
-      el.innerHTML =
-        '<span>' + (message || 'Could not load lists.') + '</span> '
+      el.innerHTML = '<span>' + (message || 'Could not load lists.') + '</span> '
         + '<button type="button" class="hl-retry-load" id="districtRetryBtn">Retry</button>';
       var btn = document.getElementById('districtRetryBtn');
       if (btn) btn.onclick = function() { loadDistrictsAndDivisions(); };
@@ -647,10 +705,9 @@
     locationsReady = false;
     var submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = true;
-    submitBtn.title = 'Loading districts and divisions…';
     districtSelect.disabled = true;
-    districtSelect.innerHTML = '<option value="">Loading districts…</option>';
-    divisionSelect.innerHTML = '<option value="">— Select Division —</option>';
+    districtSelect.innerHTML = '<option value="">Loading districts...</option>';
+    divisionSelect.innerHTML = '<option value="">-- Select Division --</option>';
     setDistrictStatus('loading');
 
     var callbackName = 'jsonpCallback_' + Date.now();
@@ -659,19 +716,15 @@
       try {
         var list = (result && result.districts) ? result.districts : [];
         var hasError = result && result.error;
-        if (hasError) console.error('Districts API:', result.error);
 
-        if (!list.length && (hasError || !result)) {
-          districtSelect.innerHTML = '<option value="">— Unavailable —</option>';
+        if (!list.length) {
+          districtSelect.innerHTML = '<option value="">-- Unavailable --</option>';
           districtSelect.disabled = false;
-          locationsReady = false;
-          submitBtn.disabled = true;
-          submitBtn.title = 'Load districts first (use Retry)';
           setDistrictStatus('error', hasError ? String(result.error) : 'Districts could not be loaded.');
           return;
         }
 
-        districtSelect.innerHTML = '<option value="">— Select District —</option>';
+        districtSelect.innerHTML = '<option value="">-- Select District --</option>';
         list.forEach(function(d) {
           var opt = document.createElement('option');
           opt.value = d; opt.textContent = d;
@@ -681,15 +734,10 @@
         divisionData = (result && result.divisionMap) ? result.divisionMap : {};
         locationsReady = true;
         submitBtn.disabled = false;
-        submitBtn.title = '';
         setDistrictStatus('idle');
       } catch (e) {
-        console.error(e);
-        districtSelect.innerHTML = '<option value="">— Unavailable —</option>';
+        districtSelect.innerHTML = '<option value="">-- Unavailable --</option>';
         districtSelect.disabled = false;
-        locationsReady = false;
-        submitBtn.disabled = true;
-        submitBtn.title = 'Load districts first (use Retry)';
         setDistrictStatus('error', 'Something went wrong loading districts.');
       } finally {
         if (script.parentNode) document.body.removeChild(script);
@@ -702,13 +750,9 @@
       + '?action=getDistrictsAndDivisions'
       + '&callback=' + encodeURIComponent(callbackName);
     script.onerror = function() {
-      console.error('Failed to load districts.');
-      districtSelect.innerHTML = '<option value="">— Unavailable —</option>';
+      districtSelect.innerHTML = '<option value="">-- Unavailable --</option>';
       districtSelect.disabled = false;
-      locationsReady = false;
-      submitBtn.disabled = true;
-      submitBtn.title = 'Load districts first (use Retry)';
-      setDistrictStatus('error', 'Could not reach the server. Check your connection and Apps Script deployment.');
+      setDistrictStatus('error', 'Could not reach the server.');
       try { if (script.parentNode) document.body.removeChild(script); } catch(x){}
       try { delete window[callbackName]; } catch(x){}
     };
@@ -718,7 +762,7 @@
   document.getElementById('district').addEventListener('change', function() {
     var district = this.value;
     var divSelect = document.getElementById('division');
-    divSelect.innerHTML = '<option value="">— Select Division —</option>';
+    divSelect.innerHTML = '<option value="">-- Select Division --</option>';
     if (district && divisionData[district]) {
       divisionData[district].forEach(function(div) {
         var opt = document.createElement('option');
@@ -728,9 +772,7 @@
     }
   });
 
-  /* ─────────────────────────────────────────────
-     CONDITIONAL FORM SECTIONS
-  ───────────────────────────────────────────── */
+  /* ── CONDITIONAL FORM SECTIONS ── */
   function resetConditionalSections() {
     document.getElementById('divisionSection').classList.add('hidden');
     document.getElementById('syndicateStudentSection').classList.add('hidden');
@@ -768,9 +810,7 @@
     });
   });
 
-  /* ─────────────────────────────────────────────
-     FORM SUBMISSION
-  ───────────────────────────────────────────── */
+  /* ── FORM SUBMISSION ── */
   function getRadioValue(name) {
     var el = document.querySelector('input[name="' + name + '"]:checked');
     return el ? el.value : '';
@@ -789,83 +829,59 @@
       err.textContent = 'Please wait until districts and divisions finish loading.';
       err.style.display = 'block'; return;
     }
-
     if (!fullName || !mobile || !district || !designation) {
       err.textContent = 'Please fill in all required fields.';
       err.style.display = 'block'; return;
     }
 
     var formData = {
-      fullName:        fullName,
-      mobileNumber:    mobile,
-      campusDistrict:  district,
-      designation:     designation,
-      division:        '',
-      isCampusStudent: '',
-      collegeType:     '',
-      collegeName:     '',
-      courseYear:      ''
+      fullName: fullName, mobileNumber: mobile,
+      campusDistrict: district, designation: designation,
+      division: '', isCampusStudent: '',
+      collegeType: '', collegeName: '', courseYear: ''
     };
 
     if (designation === 'Division Campus Secretary') {
       var div = document.getElementById('division').value;
-      if (!div) {
-        err.textContent = 'Please select a division.';
-        err.style.display = 'block'; return;
-      }
+      if (!div) { err.textContent = 'Please select a division.'; err.style.display = 'block'; return; }
       formData.division = div;
-
     } else if (designation === 'Campus Unit Leader') {
       var ct = getRadioValue('collegeType');
       var cn = document.getElementById('collegeName').value.trim();
       var cy = document.getElementById('courseYear').value.trim();
-      if (!ct || !cn || !cy) {
-        err.textContent = 'Please fill in all college details.';
-        err.style.display = 'block'; return;
-      }
-      formData.collegeType = ct;
-      formData.collegeName = cn;
-      formData.courseYear  = cy;
-
+      if (!ct || !cn || !cy) { err.textContent = 'Please fill in all college details.'; err.style.display = 'block'; return; }
+      formData.collegeType = ct; formData.collegeName = cn; formData.courseYear = cy;
     } else if (designation === 'District Campus Syndicate') {
       var is = getRadioValue('isCampusStudent');
-      if (!is) {
-        err.textContent = 'Please indicate if you are a campus student.';
-        err.style.display = 'block'; return;
-      }
+      if (!is) { err.textContent = 'Please indicate if you are a campus student.'; err.style.display = 'block'; return; }
       formData.isCampusStudent = is;
       if (is === 'Yes') {
         var sct = getRadioValue('collegeType');
         var scn = document.getElementById('collegeName').value.trim();
         var scy = document.getElementById('courseYear').value.trim();
-        if (!sct || !scn || !scy) {
-          err.textContent = 'Please fill in all college details.';
-          err.style.display = 'block'; return;
-        }
-        formData.collegeType = sct;
-        formData.collegeName = scn;
-        formData.courseYear  = scy;
+        if (!sct || !scn || !scy) { err.textContent = 'Please fill in all college details.'; err.style.display = 'block'; return; }
+        formData.collegeType = sct; formData.collegeName = scn; formData.courseYear = scy;
       }
     }
 
     var btn = document.getElementById('submitBtn');
-    btn.disabled = true; btn.textContent = 'Registering…';
+    btn.disabled = true; btn.textContent = 'Registering...';
 
     fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
+      method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(formData)
     })
-      .then(function() {
-        document.getElementById('formArea').style.display = 'none';
-        document.getElementById('successMsg').style.display = 'block';
-      })
-      .catch(function() {
-        err.textContent = 'Submission failed. Please try again.';
-        err.style.display = 'block';
-        btn.disabled = false; btn.textContent = 'Register';
-      });
+    .then(function() {
+      document.getElementById('successTitle').textContent = 'Registration complete';
+      document.getElementById('successSub').textContent = 'Welcome to the Human Library, Learner\'s Commune 2026';
+      showOnly('successMsg');
+    })
+    .catch(function() {
+      err.textContent = 'Submission failed. Please try again.';
+      err.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Register';
+    });
   }
 </script>
 </body>
